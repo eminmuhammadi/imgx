@@ -24,6 +24,7 @@ type RGBA struct {
 	A uint32 `json:"a"`
 }
 
+// Import PNG file
 func Import(path string) (*os.File, error) {
 	// path
 	path, err := filepath.Abs(path)
@@ -45,6 +46,7 @@ func Import(path string) (*os.File, error) {
 	return file, nil
 }
 
+// Encode PNG file to Data
 func Encode(file *os.File) (Data, error) {
 	file.Seek(0, 0)
 
@@ -81,6 +83,7 @@ func Encode(file *os.File) (Data, error) {
 	return *data, nil
 }
 
+// Save PNG file
 func (data *Data) Save(path string) error {
 	// Create new image from rgb pixels
 	newImage := image.NewRGBA(image.Rect(0, 0, data.Width, data.Height))
@@ -119,6 +122,7 @@ func (data *Data) Save(path string) error {
 	return nil
 }
 
+// Json encode Data to json
 func (data *Data) Json() (string, error) {
 	// return Data as json
 	jsonData, err := json.Marshal(data)
@@ -129,6 +133,7 @@ func (data *Data) Json() (string, error) {
 	return string(jsonData), nil
 }
 
+// Json data to PNG file
 func (data *Data) DecodeJson(jsonData string) error {
 	// json to Data
 	err := json.Unmarshal([]byte(jsonData), data)
@@ -137,25 +142,4 @@ func (data *Data) DecodeJson(jsonData string) error {
 	}
 
 	return nil
-}
-
-func main() {
-	data := Data{}
-
-	file, err := Import("data/test-input.png")
-	if err != nil {
-		panic(err)
-	}
-
-	data, err = Encode(file)
-	if err != nil {
-		panic(err)
-	}
-
-	json, err := data.Json()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(json)
 }
